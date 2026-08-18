@@ -1,0 +1,15 @@
+parameters:
+    level: 7
+    paths:
+        - src
+        - tests
+    excludePaths:
+        # Pest DSL files use global test functions phpstan can't resolve without
+        # a Pest extension; they carry no package logic worth analysing.
+        - tests/ArchTest.php
+        - tests/Pest.php
+        - tests/Unit/FixtureTest.php
+        # testbench dictates an untyped defineEnvironment($app) signature we
+        # can't type natively; excluded so type-coverage stays deterministic.
+        - tests/TestCase.php
+    tmpDir: build/phpstan
