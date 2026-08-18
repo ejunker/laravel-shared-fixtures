@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/ejunker/laravel-shared-fixtures/compare/v0.1.0...1.x)
+## [Unreleased](https://github.com/ejunker/laravel-shared-fixtures/compare/v0.1.1...1.x)
+
+## [v0.1.1](https://github.com/ejunker/laravel-shared-fixtures/compare/v0.1.0...v0.1.1) - 2026-08-18
+
+### Fixed
+
+- `$freshFixtures = true` now rebuilds fixtures assigned in `fixtures()` on every test. Previously the pristine snapshot was captured only once, so later tests cloned a stale model whose row had already rolled back.
 
 ## [v0.1.0](https://github.com/ejunker/laravel-shared-fixtures/compare/...v0.1.0) - 2026-08-17
 

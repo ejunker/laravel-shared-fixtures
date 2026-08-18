@@ -12,4 +12,9 @@ parameters:
         # testbench dictates an untyped defineEnvironment($app) signature we
         # can't type natively; excluded so type-coverage stays deterministic.
         - tests/TestCase.php
+        # declares the optional $freshFixtures property, which makes phpstan
+        # narrow property_exists() in the trait to "always true" when analysed
+        # in this class's context — a false positive. The trait stays analysed
+        # via SharedFixturesTest (which doesn't declare it).
+        - tests/Feature/FreshFixturesTest.php
     tmpDir: build/phpstan

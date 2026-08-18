@@ -111,7 +111,7 @@ trait WithSharedFixtures
             }
         }
 
-        $freshFixtures = $this->freshFixtures ?? false;
+        $freshFixtures = property_exists($this, 'freshFixtures') && $this->freshFixtures;
 
         // build + capture pristine fixtures once at the outer level — the
         // factories run a single time and their rows persist for the whole class
@@ -140,14 +140,22 @@ trait WithSharedFixtures
      */
     private function capturePristineFixtures(): void
     {
+        $attributeProperties = [];
+
         foreach ($this->fixtureProperties() as [$property, $build]) {
-            self::$pristineFixtures[$property->getName()] = $build();
+            $name = $property->getName();
+            self::$pristineFixtures[$name] = $build();
+            $attributeProperties[$name] = true;
         }
 
+        // Snapshot whatever fixtures() assigned. Skip #[Fixture] properties
+        // (already built above); re-capture the rest every call so the
+        // freshFixtures path picks up each test's freshly-built value rather
+        // than a stale one whose row has since rolled back.
         foreach ($this->userStaticProperties() as $property) {
             $name = $property->getName();
 
-            if (! array_key_exists($name, self::$pristineFixtures) && $property->isInitialized()) {
+            if (! isset($attributeProperties[$name]) && $property->isInitialized()) {
                 self::$pristineFixtures[$name] = $property->getValue();
             }
         }
